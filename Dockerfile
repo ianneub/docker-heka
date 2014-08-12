@@ -18,6 +18,9 @@ RUN cp /heka/build/heka/bin/hekad /app/hekad
 WORKDIR /app
 ADD config.toml /app/config.toml
 
+RUN mkdir -p /usr/share/heka/lua_modules
+RUN cp /heka/build/heka/modules/* /usr/share/heka/lua_modules
+
 EXPOSE 4881
 
 CMD ["/app/hekad", "--config", "/app/config.toml"]
