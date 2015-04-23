@@ -2,25 +2,28 @@ FROM ianneub/go:1.3
 
 RUN apt-get update && \
     apt-get -y upgrade && \
-    apt-get install -y cmake python-sphinx protobuf-compiler
-
-ADD . /app
+    apt-get install -y cmake python-sphinx protobuf-compiler && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /heka
 RUN git clone https://github.com/mozilla-services/heka.git /heka
-ADD plugin_loader.cmake /heka/cmake/plugin_loader.cmake
+COPY plugin_loader.cmake /heka/cmake/plugin_loader.cmake
 
 WORKDIR /heka
 RUN /bin/bash -c 'source build.sh'
 
-RUN cp /heka/build/heka/bin/hekad /app/hekad
+COPY config.toml /app/config.toml
 
-WORKDIR /app
-ADD config.toml /app/config.toml
-
-RUN mkdir -p /usr/share/heka/lua_modules
-RUN cp /heka/build/heka/modules/* /usr/share/heka/lua_modules
+RUN mkdir -p /usr/share/heka/lua_decoders && \
+    mkdir -p /usr/share/heka/lua_encoders && \
+    mkdir -p /usr/share/heka/lua_filters && \
+    mkdir -p /usr/share/heka/lua_modules && \
+    cp /heka/sandbox/lua/decoders/* /usr/share/heka/lua_decoders && \
+    cp /heka/sandbox/lua/encoders/* /usr/share/heka/lua_encoders && \
+    cp /heka/sandbox/lua/filters/* /usr/share/heka/lua_filters && \
+    cp /heka/build/heka/lib/luasandbox/modules/* /usr/share/heka/lua_modules
 
 EXPOSE 4881
 
-CMD ["/app/hekad", "--config", "/app/config.toml"]
+WORKDIR /heka/build/heka/bin
+CMD ["/heka/build/heka/bin/hekad", "--config", "/app/config.toml"]
