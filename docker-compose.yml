@@ -1,0 +1,4 @@
+heka:
+  image: 'ianneub/heka:latest'
+  ports:
+    - '4881:4881'
