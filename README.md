@@ -30,3 +30,5 @@ curl -XPOST 'http://heka.testing.ianneub.svc.tutum.io:4881/' -d 'asdf=1234'
 ```
 
 Replace `heka.testing.ianneub.svc.tutum.io` with the hostname of your node on Tutum. You can find this hostname in the servcie dashboard on Tutum.
+
+Then watch the log files of the container on Tutum to see the log entries!
