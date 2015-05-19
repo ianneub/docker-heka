@@ -2,7 +2,7 @@ FROM ianneub/go:1.3
 
 RUN apt-get update && \
     apt-get -y upgrade && \
-    apt-get install -y cmake python-sphinx protobuf-compiler && \
+    apt-get install -y cmake python-sphinx protobuf-compiler debhelper && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /heka
